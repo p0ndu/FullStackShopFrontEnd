@@ -11,7 +11,6 @@ const app = Vue.createApp({
       showShop: true,
       showCheckout: false,
       showDropdownCart: false,
-      showCalendar: false,
       showOrderPopup: false,
       searchQuery: "",
       searchResults: [],
@@ -34,11 +33,6 @@ const app = Vue.createApp({
         cardNumber: null,
       },
 
-      // calendar data
-      WEEKDAYS: window.WEEKDAYS,
-      displayedMonth: today.getMonth(),
-      displayedYear: today.getFullYear(),
-
       // error data for input validation on checkout
       errors: {
         name: "",
@@ -53,7 +47,6 @@ const app = Vue.createApp({
 
     // display functions
     hideAll() {
-      this.showCalendar = false;
       this.showCheckout = false;
       this.showDropdownCart = false;
       this.showShop = false;
@@ -92,15 +85,6 @@ const app = Vue.createApp({
       this.hideAll;
       this.openShop();
     },
-
-    openCalendar() {
-      this.hideAll();
-      this.showCalendar = true;
-    },
-    closeCalendar() {
-      this.openShop();
-    },
-
 
     // cart functions
     addToCart(activity) {
