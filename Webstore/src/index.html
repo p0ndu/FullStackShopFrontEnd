@@ -70,10 +70,6 @@
         placeholder="Search…" 
         class="searchInput"
     >
-
-    <span @click="search()" class="searchButton">
-        Search
-    </span>
 </span>
 
 
@@ -102,7 +98,7 @@
                 <div class="activityGrid">
 
                     <!-- each grid item rendered here -->
-                    <div v-for="activity in sortedActivities" :key="activity._id" class="activityCard"
+                    <div v-for="activity in filteredActivities" :key="activity._id" class="activityCard"
                         @click="expandActivity(activity._id)">
                         <!-- clicking card switches visible object to selected expandedView template below-->
 

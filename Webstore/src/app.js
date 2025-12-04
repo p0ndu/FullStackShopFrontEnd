@@ -4,6 +4,7 @@ import { cache, cacheExpandedActivity } from "./cache.js";
 const app = Vue.createApp({
   data() {
     let today = new Date();
+
     return {
       // general site data
       siteName: "Alexville Afterschool Activities",
@@ -218,9 +219,21 @@ const app = Vue.createApp({
     },
 
     // search functions
+    debouncedSearch() {
+      clearTimeout(this.searchTimeout);
+
+      this.searchTimeout = setTimeout(() => {
+        this.search();
+      }, 300); // milliseconds delay
+    },
     async search() {
-        const res = await API_GET(`search?q=${this.searchQuery}`);
-        this.searchResults = res.data; // now contains object ids of activities matching search query
+      if (!this.searchQuery.trim()) {
+        this.searchResults = [];
+        return;
+      }
+
+      const res = await API_GET(`search?q=${this.searchQuery}`);
+      this.searchResults = res.data;
     },
 
     // misc helper functions
@@ -296,6 +309,16 @@ const app = Vue.createApp({
       )
     },
 
+    filteredActivities() {
+      // If no search has been performed, show all activities
+      if (this.searchResults.length === 0 || this.searchQuery.trim() === "") {
+        return this.sortedActivities;
+      }
+      // otherwise return activities that match
+      return this.sortedActivities.filter(a => this.searchResults.includes(a._id));
+    },
+
+
     daysInMonth() { // returns array holding days populated with activities
       // sliding window approach
 
@@ -344,14 +367,17 @@ const app = Vue.createApp({
   },
   watch: {
     cart: {
-      handler(newVal, oldVal) {
+      handler(newVal) {
         console.log("Cart updated")
         console.log("new cart:")
         console.log(newVal)
       },
       deep: true // makes handler show nested values
+    },
+    searchQuery() {
+      this.debouncedSearch(); // call search when query changes
     }
-  }
+  },
 });
 
 // expose as vm to manually check data when debuggin REMOVE THIS
