@@ -6,34 +6,37 @@ export const cache = Vue.reactive({
 });
 
 export async function cacheExpandedActivity(_id) {
+    let activity = cache.expandedActivities[_id];
 
-    // try find _id in cache
-    let res = cache.expandedActivities[_id];
-
-    if (res) {
-        // update vacancies
-        const vacancyResponse = await API_GET(`activities/vacancies/${_id}`);
-
-        if (vacancyResponse && vacancyResponse.data) {
-            res.vacancies = vacancyResponse.data.vacancies;
-        } else {
-            console.log('Error updating vacancies, continuing with stale data');
-        }
-
-        return res;
+    if (activity) {
+        updateVacancies(activity);
+    } else {
+        activity = await fetchExpandedActivity(_id);
+        cache.expandedActivities[_id] = activity.data;
     }
 
-    // if miss then fetch and cache it 
-    console.log('fetching data for ' + _id);
-    res = await API_GET(`activities/${_id}`);
+    console.log(activity.data);
+    return cache.expandedActivities[_id];
+}
 
-    if (!res || !res.data) {
+async function updateVacancies(activity) {
+    const vacancyResponse = await API_GET(`activities/vacancies/${activity._id}`);
+
+    if (vacancyResponse && vacancyResponse.data) {
+        activity.vacancies = vacancyResponse.data.vacancies;
+    } else {
+        console.log('Error updating vacancies, continuing with stale data');
+    }
+}
+
+async function fetchExpandedActivity(_id) {
+    console.log('fetching data for ' + _id);
+    const activity = await API_GET(`activities/${_id}`);
+
+    if (!activity || !activity.data) {
         console.log('Error fetching expanded activity, in setup.js');
         return null;
     }
 
-    cache.expandedActivities[_id] = res.data;
-
-    console.log(res.data);
-    return res.data;
+    return activity;
 }

@@ -91,17 +91,12 @@ const app = Vue.createApp({
 
             if (foundMatch != null) {
                 foundMatch.quantity++; // increment the quantity
-            } else { // build new cartObject instead as its the first instance of this item in the cart
-                let cartObject = {
-                    _id: activity._id,
-                    name: activity.name,
-                    price: activity.price,
-                    quantity: 1
-                }
-                this.cart.push(cartObject)
+            } else {
+        let cartDTO = window.cartDTO(activity._id, activity.name, activity.price);
+        this.cart.push(cartDTO)
             }
 
-            // the fact that I have to write it like this so stupid, fucking js man
+            // the fact that I have to write it like this is so stupid
             this.totalCartPrice = +this.totalCartPrice + +activity.price;
             this.cartItemCount++; // increment number of items in the cart
         },
@@ -260,12 +255,6 @@ const app = Vue.createApp({
                 console.log(newVal)
             },
             deep: true // makes handler show nested values
-        },
-        sortType: {
-            handler(newval, oldval) {
-                console.log("sortType updated")
-                console.log(oldval + " -> " + newval)
-            }
         }
     }
 });
