@@ -3,15 +3,12 @@ import { cache, cacheExpandedActivity } from "./cache.js";
 
 const app = Vue.createApp({
   data() {
-    let today = new Date();
-
     return {
       // general site data
       siteName: "Alexville Afterschool Activities",
       showShop: true,
       showCheckout: false,
       showDropdownCart: false,
-      showCalendar: false,
       showOrderPopup: false,
       searchQuery: "",
       searchResults: [],
@@ -34,11 +31,6 @@ const app = Vue.createApp({
         cardNumber: null,
       },
 
-      // calendar data
-      WEEKDAYS: window.WEEKDAYS,
-      displayedMonth: today.getMonth(),
-      displayedYear: today.getFullYear(),
-
       // error data for input validation on checkout
       errors: {
         name: "",
@@ -53,7 +45,6 @@ const app = Vue.createApp({
 
     // display functions
     hideAll() {
-      this.showCalendar = false;
       this.showCheckout = false;
       this.showDropdownCart = false;
       this.showShop = false;
@@ -90,14 +81,6 @@ const app = Vue.createApp({
     },
     closeCheckoutPopup() {
       this.hideAll;
-      this.openShop();
-    },
-
-    openCalendar() {
-      this.hideAll();
-      this.showCalendar = true;
-    },
-    closeCalendar() {
       this.openShop();
     },
 
@@ -177,30 +160,6 @@ const app = Vue.createApp({
     },
 
     // misc helper functions
-    getDateInfo(activityDate) {
-      const d = new Date(activityDate);
-      const date = d.toLocaleDateString([], {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-
-      const time = d.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      });
-
-      // build and return html snippet
-      // felt like trying a html injection approach, mostly just for fun
-      return `
-        <div class = 'activityDateTimeContainer'>
-        <span class='date'>${date}</span>
-        <span class='time'>${time}</span>
-        <p> Duration: ${this.selectedActivity.duration} minutes </p>
-        </div>
-      `;
-    },
     findItemInCart(id) {
       return this.cart.find(item => item._id === id);
     },
