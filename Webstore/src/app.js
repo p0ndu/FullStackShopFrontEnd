@@ -12,6 +12,8 @@ const app = Vue.createApp({
       showDropdownCart: false,
       showCalendar: false,
       showOrderPopup: false,
+      searchQuery: "",
+      searchResults: [],
 
       selectedActivity: null,
 
@@ -55,6 +57,7 @@ const app = Vue.createApp({
       this.showDropdownCart = false;
       this.showShop = false;
       this.selectedActivity = null;
+      this.showOrderPopup = false;
     },
     openShop() { // store isntead of shop as if 2 things are called showShop that seems like a nightmare in the making
       this.hideAll();
@@ -87,7 +90,6 @@ const app = Vue.createApp({
     closeCheckoutPopup() {
       this.hideAll;
       this.openShop();
-      this.showOrderPopup = false;
     },
 
     openCalendar() {
@@ -215,6 +217,12 @@ const app = Vue.createApp({
       }
     },
 
+    // search functions
+    async search() {
+        const res = await API_GET(`search?q=${this.searchQuery}`);
+        this.searchResults = res.data; // now contains object ids of activities matching search query
+    },
+
     // misc helper functions
     getDateInfo(activityDate) {
       const d = new Date(activityDate);
@@ -232,7 +240,6 @@ const app = Vue.createApp({
 
       // build and return html snippet
       // felt like trying a html injection approach, mostly just for fun
-
       return `
         <div class = 'activityDateTimeContainer'>
         <span class='date'>${date}</span>
@@ -318,7 +325,6 @@ const app = Vue.createApp({
     },
 
     groupedDays() { // returns 2d array with days grouped by weekday
-
       // make bucket for each weekday
       const weekdays = Array.from({ length: 7 }, () => []);
 

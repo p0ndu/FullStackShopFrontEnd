@@ -55,15 +55,27 @@
         </header>
 
 
-        <!-- navbar -->
-        <span class="navBar">
-            <span @click="openShop()" class="shopButton">
-                Shop
-            </span>
-            <span @click="openCalendar()" class="calendarButton">
-                Calendar
-            </span>
-        </span>
+      <!-- navbar -->
+<span class="navBar">
+    <span @click="openShop()" class="shopButton">
+        Shop
+    </span>
+    <span @click="openCalendar()" class="calendarButton">
+        Calendar
+    </span>
+
+    <input 
+        type="text" 
+        v-model="searchQuery" 
+        placeholder="Search…" 
+        class="searchInput"
+    >
+
+    <span @click="search()" class="searchButton">
+        Search
+    </span>
+</span>
+
 
 
         <!-- sort dropdown -->
