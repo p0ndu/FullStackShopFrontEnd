@@ -87,6 +87,7 @@ const app = Vue.createApp({
     closeCheckoutPopup() {
       this.hideAll;
       this.openShop();
+      this.showOrderPopup = false;
     },
 
     openCalendar() {
