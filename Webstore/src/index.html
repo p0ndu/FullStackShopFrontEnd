@@ -30,7 +30,7 @@
                             <!-- items in cart listed -->
                             <div v-for="item in this.cart" class="cart-item">
                                 <span>{{ item.quantity }} </span>
-                                <span>{{ item.name }}</span>
+                                <span>{{ item.subject }}</span>
                                 <span>£{{ item.price }}</span>
                             </div>
 
@@ -55,22 +55,17 @@
         </header>
 
 
-      <!-- navbar -->
-<span class="navBar">
-    <span @click="openShop()" class="shopButton">
-        Shop
-    </span>
-    <span @click="openCalendar()" class="calendarButton">
-        Calendar
-    </span>
+        <!-- navbar -->
+        <span class="navBar">
+            <span @click="openShop()" class="shopButton">
+                Shop
+            </span>
+            <span @click="openCalendar()" class="calendarButton">
+                Calendar
+            </span>
 
-    <input 
-        type="text" 
-        v-model="searchQuery" 
-        placeholder="Search…" 
-        class="searchInput"
-    >
-</span>
+            <input type="text" v-model="searchQuery" placeholder="Search…" class="searchInput">
+        </span>
 
 
 
@@ -105,7 +100,7 @@
                         <div class="imageContainer">
                             <img :src="activity.image" />
                         </div>
-                        <h3 class="activityName">{{ activity.name }}</h3>
+                        <h3 class="activityName">{{ activity.subject }}</h3>
 
                     </div>
                 </div>
@@ -123,7 +118,7 @@
             <img :src="selectedActivity.image" class="expandedImage" />
 
             <span class="nameRating">
-                <h2>{{ selectedActivity.name }}</h2>
+                <h2>{{ selectedActivity.subject }}</h2>
 
                 <!-- display the rating as stars -->
                 <div class="rating">
@@ -139,53 +134,23 @@
             </span>
 
             <div class="vacancies">
-                <p>Vacancies: {{ selectedActivity.vacancies }}</p>
+                <p>Vacancies: {{ selectedActivity.vacancies - quantityInCart(selectedActivity._id) }}</p>
             </div>
 
             <span class="priceBuy">
                 <p>£{{ Number(selectedActivity.price).toFixed(2) }}</p>
-                <button @click="addToCart(selectedActivity)" class="addToCartButton">Add to Cart</button>
+                <button @click="addToCart(selectedActivity)" class="addToCartButton"
+                    :disabled="!canAddToCart(selectedActivity._id)"
+                    :class="{ disabledAddButton: !canAddToCart(selectedActivity._id) }">
+                    Add to Cart
+                </button>
+
             </span>
 
             <!-- not sure where to put this yet -->
             <div v-html="getDateInfo(selectedActivity.date)"></div>
 
             <p>{{ selectedActivity.description }}</p>
-        </div>
-
-
-        <!-- calendar -->
-        <div v-if="showCalendar" class="calendar">
-            <!-- header with date printed and controls -->
-            <div class="calendarHeader">
-                <button @click="decrementCalendar()">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-
-                <h2>{{ this.printDateHeader() }}</h2>
-
-                <button @click="incrementCalendar()">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
-
-            <!-- column for each weekday -->
-            <div class="weekdayColumns">
-                <div class="weekdayColumn" v-for="(column,i) in groupedDays" :key="i">
-                    <!-- print the weekday for each column  -->
-                    <div class="weekdayHeader"> {{ WEEKDAYS[i] }}</div>
-
-                    <!-- diplay each day in the column -->
-                    <div class="calendarDay" v-for="day in column" :key="day.date">
-                        <!-- print the date -->
-                        <div class="dayNum"> {{ day.date.getDate() }}</div>
-                        <!-- print the activities happening on that date -->
-                        <ul class="activityList">
-                            <li v-for="a in day.activities" :key="a.id"> {{a.name}} </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
 
 
@@ -199,7 +164,7 @@
                 <ul>
                     <li v-for="item in this.cart" class="checkoutItemList">
                         <span class="checkoutItemName">
-                            {{ item.name }}
+                            {{ item.subject }}
                         </span>
                         <span class="checkoutItemPrice">
                             £{{Number(item.price).toFixed(2)}}
@@ -251,9 +216,10 @@
             </div>
 
             <!-- place order button -->
-            <button @click="placeOrder" class="placeOrderButton">
+            <button @click="placeOrder()" class="checkoutButton" :disabled="!isCheckoutValid">
                 Place Order
             </button>
+
 
             <transition name="checkoutPopup">
                 <div v-if="showOrderPopup" class="checkoutPopup">

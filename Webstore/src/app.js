@@ -105,12 +105,12 @@ const app = Vue.createApp({
     // cart functions
     addToCart(activity) {
       // try find existing copy of activity in cart
-      const foundMatch = this.cart.find(item => item._id === activity._id)
+      const foundMatch = this.findItemInCart(activity._id);
 
       if (foundMatch != null) {
         foundMatch.quantity++;
       } else {
-        let cartDTO = window.cartDTO(activity._id, activity.name, activity.price);
+        let cartDTO = window.cartDTO(activity._id, activity.subject, activity.price);
         this.cart.push(cartDTO)
       }
 
@@ -142,12 +142,6 @@ const app = Vue.createApp({
 
     //checkout button
     placeOrder() {
-      const isValid = this.validateUserDetails();
-
-      if (!isValid) {
-        return;
-      }
-
       // build DTO and send to backend
       const checkoutDTO = window.checkoutDTO(
         this.cart,
@@ -157,65 +151,11 @@ const app = Vue.createApp({
       );
 
       API_POST('checkout', checkoutDTO);
+
       // empty cart and show confirmation of order
       this.cart = [];
       this.cartItemCount = 0;
       this.openCheckoutPopup();
-    },
-    validateUserDetails() {
-      this.errors.name = "";
-      this.errors.phone = "";
-      this.errors.card = "";
-
-      // name validaiton 
-      if (!this.customer.name || this.customer.name.trim().length < 2) {
-        this.errors.name = "Please enter your full name.";
-      } else if (!/^[A-Za-z ]+$/.test(this.customer.name)) {
-        this.errors.name = "Name can only contain letters and spaces.";
-      } else if (this.customer.name.trim().split(" ").length < 2) {
-        this.errors.name = "Please enter a first and last name.";
-      }
-
-      // phone validation
-      if (!/^[0-9]{10,15}$/.test(this.customer.phoneNumber)) {
-        this.errors.phone = "Phone number must be 10–15 digits.";
-      }
-
-      // card validation
-      if (!/^[0-9]{16}$/.test(this.customer.cardNumber)) {
-        this.errors.card = "Card number must be 16 digits.";
-      }
-
-      if (this.errors.name || this.errors.phone || this.errors.card) {
-        return false;
-      }
-
-      return true;
-    },
-
-    // calendar functions
-    printDateHeader() {
-      // from chatGPT because honestly making this calendar is getting boring
-      const monthName = new Date(this.displayedYear, this.displayedMonth)
-        .toLocaleString('default', { month: 'long' });
-      return `${monthName} ${this.displayedYear}`;
-    },
-
-    incrementCalendar() {
-      if (this.displayedMonth === 11) {
-        this.displayedYear++;
-        this.displayedMonth = 0;
-      } else {
-        this.displayedMonth++;
-      }
-    },
-    decrementCalendar() {
-      if (this.displayedMonth === 0) {
-        this.displayedYear--;
-        this.displayedMonth = 11;
-      } else {
-        this.displayedMonth--;
-      }
     },
 
     // search functions
@@ -260,6 +200,29 @@ const app = Vue.createApp({
         <p> Duration: ${this.selectedActivity.duration} minutes </p>
         </div>
       `;
+    },
+    findItemInCart(id) {
+      return this.cart.find(item => item._id === id);
+    },
+    canAddToCart(id) {
+      const item = this.findItemInCart(id);
+      const activity = cache.activitySummaries[id];
+      let quantityInCart;
+
+      if (item) {
+        quantityInCart = item.quantity;
+      } else {
+        quantityInCart = 0;
+      }
+
+      return (quantityInCart + 1) <= activity.vacancies; // +1 because we are checking if we can add one more
+    },
+    quantityInCart(id) {
+      const item = this.findItemInCart(id);
+      if (item) {
+        return item.quantity;
+      }
+      return 0;
     },
 
 
@@ -318,53 +281,43 @@ const app = Vue.createApp({
       return this.sortedActivities.filter(a => this.searchResults.includes(a._id));
     },
 
+    isCheckoutValid() {
+      // clear previous errors
+      this.errors.name = "";
+      this.errors.phone = "";
+      this.errors.card = "";
 
-    daysInMonth() { // returns array holding days populated with activities
-      // sliding window approach
+      let valid = true;
 
-      // start and end dates acting as pointers
-      const startDate = new Date(this.displayedYear, this.displayedMonth, 1);
-      const endDate = new Date(this.displayedYear, this.displayedMonth + 1, 0);
-
-      // array of days to be rendered and hold activities
-      const days = [];
-
-      // populate each day
-      for (let d = 0; d < endDate.getDate(); d++) {
-        // store individual date of day
-        const dDate = new Date(this.displayedYear, this.displayedMonth, d);
-
-        // store activities that happen on day
-        const dActivities = this.activities.filter(a => {
-          const activityDate = new Date(a.date);
-          // if activity date matches dayDate return it (passes the filter)
-          return activityDate.toDateString() === dDate.toDateString();
-        });
-
-        // push day object to array
-        days.push({ date: dDate, activities: dActivities });
+      // name validation
+      if (!this.customer.name || this.customer.name.trim().length < 2) {
+        this.errors.name = "Please enter your full name.";
+        valid = false;
+      } else if (!/^[A-Za-z ]+$/.test(this.customer.name)) {
+        this.errors.name = "Name can only contain letters and spaces.";
+        valid = false;
+      } else if (this.customer.name.trim().split(" ").length < 2) {
+        this.errors.name = "Please enter a first and last name.";
+        valid = false;
       }
-      return days;
-    },
 
-    groupedDays() { // returns 2d array with days grouped by weekday
-      // make bucket for each weekday
-      const weekdays = Array.from({ length: 7 }, () => []);
+      // phone validation
+      if (!/^[0-9]{10,15}$/.test(this.customer.phoneNumber)) {
+        this.errors.phone = "Phone number must be 10–15 digits.";
+        valid = false;
+      }
 
-      // fill into buckets
-      this.daysInMonth.forEach(day => {
-        // convert from sunday=0 (js version) to monday = 0
-        const jsDay = day.date.getDay();
-        const myDayIndex = (jsDay + 6) % 7;
+      // card validation
+      if (!/^[0-9]{16}$/.test(this.customer.cardNumber)) {
+        this.errors.card = "Card number must be 16 digits.";
+        valid = false;
+      }
 
-        // day goes into bucket
-        weekdays[myDayIndex].push(day);
-      });
-      return weekdays;
+      return valid;
     }
 
-
   },
+
   watch: {
     cart: {
       handler(newVal) {
@@ -376,6 +329,12 @@ const app = Vue.createApp({
     },
     searchQuery() {
       this.debouncedSearch(); // call search when query changes
+    },
+    searchResults: {
+      handler(newVal) {
+        console.log("Search results updated:")
+        console.log(newVal)
+      }
     }
   },
 });

@@ -1,7 +1,7 @@
-function makeNewCartDTO (_id, name, price){
+function makeNewCartDTO (_id, subject, price){
     return {
         _id: _id,
-        name: name,
+        subject: subject,
         price: price,
         quantity: 1
     };

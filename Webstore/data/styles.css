@@ -247,6 +247,11 @@ header h3 {
 .addToCartButton:hover {
   background-color: #218838;
 }
+.disabledAddButton {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 
 /* ===== Calendar Layout (new grouping by weekday) ===== */
 .weekdayColumns {
