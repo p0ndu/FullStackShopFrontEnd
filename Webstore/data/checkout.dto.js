@@ -1,11 +1,11 @@
 function checkoutDTO(cart, fullName, phoneNumber, cardNumber){
     let activityArray = [];
     cart.forEach(activity => {
-        const id = activity.id;
+        const _id = activity._id;
         const quantity = activity.quantity;
 
         activityArray.push({
-            _id:id,
+            _id:_id,
             quantity: quantity
         });
     });
@@ -17,7 +17,7 @@ function checkoutDTO(cart, fullName, phoneNumber, cardNumber){
     };
 
     return {
-        activities: activityArray,
+        activityArray: activityArray,
         customerDetails: customerDetails
     };
 }
