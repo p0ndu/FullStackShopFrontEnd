@@ -1,4 +1,4 @@
-function MakeCheckoutDTO(cart, fullName, phoneNumber, cardNumber){
+function makeNewCheckoutDTO(cart, fullName, phoneNumber, cardNumber){
     let activityArray = [];
     cart.forEach(activity => {
         const _id = activity._id;
@@ -22,4 +22,4 @@ function MakeCheckoutDTO(cart, fullName, phoneNumber, cardNumber){
     };
 }
 
-window.checkoutDTO = MakeCheckoutDTO;
+window.checkoutDTO = makeNewCheckoutDTO;
