@@ -1,0 +1,319 @@
+/* ===== Base Styles ===== */
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #f9f9fb;
+  color: #222;
+}
+
+/* ===== Header ===== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+/* ===== Cart ===== */
+.cartContainer button {
+  border: none;
+  cursor: pointer;
+  font-size: 1.3rem;
+  position: relative;
+}
+
+.cartContainer .cartCount {
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  position: absolute;
+  top: -8px;
+  right: -10px;
+}
+
+/* ===== Cart Dropdown ===== */
+.cart-dropdown {
+  position: absolute;
+  right: 2rem;
+  top: 70px;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  width: 250px;
+  padding: 1rem;
+  z-index: 20;
+}
+
+.cart-items {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-footer {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.checkout-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.checkout-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Animation for dropdown */
+.slideFade-enter-active, .slideFade-leave-active {
+  transition: all 0.3s ease;
+}
+.slideFade-enter-from, .slideFade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ===== Navbar ===== */
+.navBar {
+  display: flex;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+  gap: 2rem;
+}
+
+.navBar span {
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.2s;
+}
+
+.navBar span:hover {
+  color: #007bff;
+}
+
+.navBar span::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: #007bff;
+  transition: width 0.3s;
+}
+
+.navBar span:hover::after {
+  width: 100%;
+}
+
+/* ===== Sort Dropdown ===== */
+.sortContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+  font-size: 1rem;
+}
+
+.sortContainer select {
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ===== Shop Grid ===== */
+.shopContainer {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.activityGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.activityCard {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+.activityCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.imageContainer {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f6f6f6;
+}
+
+.imageContainer img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.activityName {
+  padding: 1rem 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* ===== Expanded View ===== */
+.expandedView {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.expandedImage {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.closeBtn {
+  float: right;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.priceBuy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.2rem;
+}
+
+.addToCartButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.addToCartButton:hover {
+  background-color: #218838;
+}
+
+/* ===== Calendar Layout (new grouping by weekday) ===== */
+.weekdayColumns {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.weekdayColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weekdayHeader {
+  font-weight: bold;
+  text-align: center;
+  padding: 6px 0;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #333;
+}
+
+.calendarDay {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  min-height: 80px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+
+/* ===== Checkout Form ===== */
+.checkoutForm {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.checkoutForm label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+}
+
+.checkoutForm input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.placeOrderButton {
+  display: block;
+  margin-top: 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.placeOrderButton:hover {
+  background-color: #0056b3;
+}
