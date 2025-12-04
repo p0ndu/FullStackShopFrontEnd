@@ -11,6 +11,7 @@ const app = Vue.createApp({
       showCheckout: false,
       showDropdownCart: false,
       showCalendar: false,
+      showOrderPopup: false,
 
       selectedActivity: null,
 
@@ -35,7 +36,12 @@ const app = Vue.createApp({
       displayedMonth: today.getMonth(),
       displayedYear: today.getFullYear(),
 
-
+      // error data for input validation on checkout
+      errors: {
+        name: "",
+        phone: "",
+        card: ""
+      }
     };
   },
 
@@ -72,6 +78,14 @@ const app = Vue.createApp({
       this.showCheckout = true;
     },
     closeCheckout() {
+      this.openShop();
+    },
+
+    openCheckoutPopup() {
+      this.showOrderPopup = true;
+    },
+    closeCheckoutPopup() {
+      this.hideAll;
       this.openShop();
     },
 
@@ -124,8 +138,55 @@ const app = Vue.createApp({
 
     //checkout button
     placeOrder() {
-      const checkoutDTO = window.checkoutDTO(this.cart, this.customer.name, this.customer.phoneNumber, this.customer.cardNumber);
+      const isValid = this.validateUserDetails();
+
+      if (!isValid) {
+        return;
+      }
+
+      // build DTO and send to backend
+      const checkoutDTO = window.checkoutDTO(
+        this.cart,
+        this.customer.name,
+        this.customer.phoneNumber,
+        this.customer.cardNumber
+      );
+
       API_POST('checkout', checkoutDTO);
+      // empty cart and show confirmation of order
+      this.cart = [];
+      this.cartItemCount = 0;
+      this.openCheckoutPopup();
+    },
+    validateUserDetails() {
+      this.errors.name = "";
+      this.errors.phone = "";
+      this.errors.card = "";
+
+      // name validaiton 
+      if (!this.customer.name || this.customer.name.trim().length < 2) {
+        this.errors.name = "Please enter your full name.";
+      } else if (!/^[A-Za-z ]+$/.test(this.customer.name)) {
+        this.errors.name = "Name can only contain letters and spaces.";
+      } else if (this.customer.name.trim().split(" ").length < 2) {
+        this.errors.name = "Please enter a first and last name.";
+      }
+
+      // phone validation
+      if (!/^[0-9]{10,15}$/.test(this.customer.phoneNumber)) {
+        this.errors.phone = "Phone number must be 10–15 digits.";
+      }
+
+      // card validation
+      if (!/^[0-9]{16}$/.test(this.customer.cardNumber)) {
+        this.errors.card = "Card number must be 16 digits.";
+      }
+
+      if (this.errors.name || this.errors.phone || this.errors.card) {
+        return false;
+      }
+
+      return true;
     },
 
     // calendar functions
@@ -154,7 +215,7 @@ const app = Vue.createApp({
     },
 
     // misc helper functions
-    getDateInfo(activityDate){
+    getDateInfo(activityDate) {
       const d = new Date(activityDate);
       const date = d.toLocaleDateString([], {
         year: 'numeric',
@@ -169,8 +230,9 @@ const app = Vue.createApp({
       });
 
       // build and return html snippet
+      // felt like trying a html injection approach, mostly just for fun
 
-      return  `
+      return `
         <div class = 'activityDateTimeContainer'>
         <span class='date'>${date}</span>
         <span class='time'>${time}</span>
@@ -282,12 +344,6 @@ const app = Vue.createApp({
       },
       deep: true // makes handler show nested values
     }
-    /* sortType: {
-      handler(newval, oldval) {
-        console.log("sortType updated")
-        console.log(oldval + " -> " + newval)
-      }
-    } */
   }
 });
 

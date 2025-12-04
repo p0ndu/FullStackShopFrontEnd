@@ -130,7 +130,7 @@
                 </div>
             </span>
 
-            <div class="vacancies"> 
+            <div class="vacancies">
                 <p>Vacancies: {{ selectedActivity.vacancies }}</p>
             </div>
 
@@ -224,24 +224,40 @@
             <div class="customerDetails">
                 <label>
                     Full Name:
-                    <input type="text" v-model="customer.name" required />
+                    <input type="text" v-model="customer.name" />
+                    <span class="inputError" v-if="errors.name">{{ errors.name }}</span>
                 </label>
 
                 <label>
                     Phone Number:
-                    <input type="text" v-model="customer.phoneNumber" required />
+                    <input type="text" v-model="customer.phoneNumber" />
+                    <span class="inputError" v-if="errors.phone">{{ errors.phone }}</span>
                 </label>
 
                 <label>
                     Card Number:
-                    <input type="text" v-model="customer.cardNumber" required />
+                    <input type="text" v-model="customer.cardNumber" />
+                    <span class="inputError" v-if="errors.card">{{ errors.card }}</span>
                 </label>
+
             </div>
 
             <!-- place order button -->
             <button @click="placeOrder" class="placeOrderButton">
                 Place Order
             </button>
+
+            <transition name="checkoutPopup">
+                <div v-if="showOrderPopup" class="checkoutPopup">
+                    <div class="checkoutPopupBox">
+                        <p>Order placed</p>
+                        <button @click="closeCheckoutPopup()">OK</button>
+                    </div>
+                </div>
+            </transition>
+
+
+
         </div>
 
 
