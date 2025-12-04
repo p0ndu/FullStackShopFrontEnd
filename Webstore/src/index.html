@@ -71,14 +71,14 @@
             <label for="sortSelect">Sort By:</label>
             <select id="sortSelect" v-model="sortType">
                 <!-- change this to be dynamic later -->
-                <option :value="SORT_TYPES.PRICE_ASCENDING">Price Low -> High</value>
                 <option :value="SORT_TYPES.PRICE_DESCENDING">Price High -> Low</value>
+                <option :value="SORT_TYPES.PRICE_ASCENDING">Price Low -> High</value>
                 <option :value="SORT_TYPES.EARLIEST_FIRST">Earliest -> Latest</value>
                 <option :value="SORT_TYPES.EARLIEST_LAST">Latest -> Earliest</value>
-                <option :value="SORT_TYPES.RATING_ASCENDING">Rating High -> Low</value>
-                <option :value="SORT_TYPES.RATING_DESCENDING"> Rating Low -> High</value>
-                <option :value="SORT_TYPES.SLOTS_DESCENDING">Spaces High -> Low</value>
-                <option :value="SORT_TYPES.SLOTS_ASCENDING"> Spaces Low -> High</value>
+                <option :value="SORT_TYPES.RATING_DESCENDING">Rating High -> Low</value>
+                <option :value="SORT_TYPES.RATING_ASCENDING">Rating Low -> High</value>
+                <option :value="SORT_TYPES.SLOTS_DESCENDING">Vacancies High -> Low</value>
+                <option :value="SORT_TYPES.SLOTS_ASCENDING">Vacancies Low -> High</value>
             </select>
         </div>
 
@@ -128,9 +128,11 @@
                         <i v-else class="fa-regular fa-star"></i>
                     </template>
                 </div>
-
-
             </span>
+
+            <div class="vacancies"> 
+                <p>Vacancies: {{ selectedActivity.vacancies }}</p>
+            </div>
 
             <span class="priceBuy">
                 <p>£{{ Number(selectedActivity.price).toFixed(2) }}</p>
@@ -138,8 +140,7 @@
             </span>
 
             <!-- not sure where to put this yet -->
-            <p>{{ new Date(selectedActivity.date).toDateString() }}</p>
-            <p> Duration: {{selectedActivity.duration}} minutes</p>
+            <div v-html="getDateInfo(selectedActivity.date)"></div>
 
             <p>{{ selectedActivity.description }}</p>
         </div>
@@ -249,7 +250,7 @@
 
     <script src="../data/constants.js"></script>
     <script src="../data/checkout.dto.js"></script>
-    <script src="../data/card.dto.js"></script>
+    <script src="../data/cart.dto.js"></script>
     <script type="module" src="./api/client.js"></script>
     <script type="module" src="./cache.js"></script>
     <script type="module" src="./setup.js"></script>
