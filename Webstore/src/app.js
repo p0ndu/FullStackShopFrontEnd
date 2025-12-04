@@ -126,9 +126,11 @@ const app = Vue.createApp({
     },
 
     //checkout button
-    placeOrder() {
-      // placeholder function for now
-      console.log("Place order button clicked");
+    placeOrder(fullName, phoneNumber) {
+      const checkoutDTO = window.checkoutDTO(this.cart, this.customer.name, this.customer.phoneNumber, this.customer.cardNumber);
+
+      //TODO: SEND TO BACKEND ENDPOINT HERE
+      console.log(checkoutDTO);
     },
 
     // calendar functions
