@@ -248,11 +248,8 @@
 
     </div> <!-- end of app -->
 
-    <script src="../data/checkout.dto.js"></script>
-    <script>
-        // Ensure checkoutDTO is globally available before app.js runs
-        console.log("checkoutDTO available?", typeof window.checkoutDTO);
-    </script>
+    <script type="module" src="./api/client.js"></script>
+    <script type="module" src="app.js"></script>
     <script src="../data/constants.js"></script>
     <script src="../data/activities.js"></script>
     <script src="app.js"></script>

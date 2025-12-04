@@ -1,6 +1,8 @@
+import { API_GET, API_POST } from "./api/client.js";
+
 const app = Vue.createApp({
   data() {
-    today = new Date();
+    let today = new Date();
     return {
       // general site data
       siteName: "Alexville Afterschool Activities",
@@ -131,6 +133,8 @@ const app = Vue.createApp({
 
       //TODO: SEND TO BACKEND ENDPOINT HERE
       console.log(checkoutDTO);
+
+      API_POST('checkout', checkoutDTO);
     },
 
     // calendar functions

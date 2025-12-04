@@ -10,3 +10,5 @@ window.SORT_TYPES = Object.freeze({
 });
 
 window.WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+window.API_BASE_URL='https://fullstackshopproj.onrender.com/api/'
